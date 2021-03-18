@@ -1,7 +1,20 @@
 "use strict";
 const product = document.querySelector(".products");
 const cartItem = document.querySelector(".cart__products");
-const cartProducts = [];
+let cartProducts = [];
+const cart = document.querySelector(".cart");
+let restoreCartStorage;
+let saveToCartStorage;
+
+window.addEventListener("load", function() {
+    restoreCartStorage = localStorage.getItem("cart");
+    if (restoreCartStorage !== null) {
+        restoreCartStorage = JSON.parse(localStorage.getItem("cart"));
+        cartProducts = restoreCartStorage;
+        addToCart(cartProducts);
+    }
+})
+
 product.addEventListener("click", function(event) {
     event.preventDefault();
     let productQuantity;
@@ -25,6 +38,8 @@ product.addEventListener("click", function(event) {
             if (chosenProduct !== -1) {
                 cartProducts[chosenProduct].quantity += productCount;
                 addToCart(cartProducts);
+                saveToCartStorage = JSON.stringify(cartProducts);
+                localStorage.setItem("cart", saveToCartStorage);
                 return false;
             }
         }
