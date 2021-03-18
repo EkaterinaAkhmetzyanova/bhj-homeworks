@@ -1,24 +1,25 @@
 "use strict";
-const tooltipElements = document.querySelectorAll(".has-tooltip");
+const tooltipElements = Array.from(document.querySelectorAll(".has-tooltip"));
+let activeTooltip = null;
 for (let i = 0; i < tooltipElements.length; i++) {
     const tooltipElement = tooltipElements[i];
+    tooltipElement.addEventListener("click", showTip);
 
-    function tipReveal(e) {
-        const activeTooltip = null;
-        const event = e.target;
-        const title = event.getAttribute("title");
-        if (activeTooltip != null && activeTooltip.innerText === title) {
-            activeTooltip.remove();
-            activeTooltip = null;
+    function showTip(event) {
+        if (activeTooltip !== null) {
+            activeTooltip.classList.remove("tooltip_active");
             return false;
-        } else if (activeTooltip != null) {
-            activeTooltip.remove();
         }
+        const title = event.target.getAttribute("title");
         const tooltipDiv = document.createElement("div");
-        tooltipDiv.className = "tooltip tooltip_active";
-        tooltipDiv.innerText = title;
+        tooltipDiv.className = "tooltip";
         tooltipElement.insertAdjacentElement("afterend", tooltipDiv);
-        e.preventDefault();
+        tooltipDiv.innerText = title;
+        tooltipDiv.classList.add("tooltip_active");
+        activeTooltip = document.querySelector(".tooltip");
+        tooltipDiv.style.top = event.target.getBoundingClientRect().top + 20 + "px";
+        tooltipDiv.style.left = event.target.getBoundingClientRect().left + "px";
+        event.preventDefault();
     }
-    tooltipElement.addEventListener("click", tipReveal);
+
 }
